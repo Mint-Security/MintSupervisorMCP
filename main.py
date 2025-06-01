@@ -9,10 +9,10 @@ from src.installers.cursor.mac.installer import CursorMacInstaller
 from src.installers.claude_desktop.mac.installer import ClaudeDesktopMacInstaller
 from src.installers.claude_code.mac.installer import ClaudeCodeMacInstaller
 from src.installers.windsurf.mac.installer import WindsurfMacInstaller
-from src.consts import UNINSTALL_FOLDERS
+from src.consts import UNINSTALL_FOLDERS, VERSION
 
 def print_welcome():
-    print("\n=== Mint Security Supervisor Installer ===\n")
+    print(f"\n=== Mint Security Supervisor Installer ({VERSION}) ===\n")
 
 installer_objects = {
     "cursor": {
