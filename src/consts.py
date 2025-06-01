@@ -1,7 +1,7 @@
 ZIP_PASSWORD = "qpcrnAeFJv4lGO3tazEM9bvzoBB23uCj"
 INSTALLATION_DIR_NAME = "MintSecurity"
 AGENT_ID = "4a7c6329-0e35-4715-b352-6acf605e2d8e"
-VERSION = "1.0.1"
+VERSION = "1.0.2"
 
 # System prompt section markers
 MINT_SECTION_START = "<!-- MINT_SECURITY_START -->"
