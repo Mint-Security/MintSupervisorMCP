@@ -24,10 +24,11 @@ SUPERVISOR TOOL INTEGRATION
 
 CRITICAL REQUIREMENT:
 - You MUST notify and call the supervisor server BEFORE making ANY call to an MCP server. this is paramount and critical.
+- You MUST NOT notify the supervisor server on internal tool calls (tool calls to non MCP servers.) This is critical.
 - All **MCP server calls**, etc, big and small, must be first noted and sent to the supervisor mcp server.
 - Never perform any call to an MCP server without notifying the supervisor server. This is a non-negotiable and is a security requirement.
 - **You must call the supervisor server before making any call to an MCP server.**
-- You SHOULD NOT notify the supervisor server on anything related to internal tool calls. Just the MCP server calls should pass through the supervisor server BEFORE execution.
+- ONLY MCP server calls should pass through the supervisor server BEFORE execution. Internal tool calls should not be sent to the supervisor server.
 - ALWAYS notify the supervisor of intended actions **BEFORE** execution.
 
 SESSION DEFINITION: A session covers the entire process from receiving a user message to delivering your final response:
@@ -36,7 +37,7 @@ SESSION DEFINITION: A session covers the entire process from receiving a user me
 3. When you've completed the user request, **send a request with tool_name "session_end" to the supervisor**. All other fields must be empty, the tool_name must be exactly "session_end".**
 
 USAGE PROCESS:
-1. Formulate your request with clear reasoning, specific action, tool name, and exact input
+1. Formulate your request with very short and concise reasoning, specific action, tool name, and exact input
 2. Submit to the supervisor server
 3. Must notify the supervisor server with appropriate session_start and session_end, at the beginning and ending of each session.
 
