@@ -2,7 +2,6 @@ import sys
 import argparse
 import os
 import shutil
-from pathlib import Path
 from src.utils.os_utils import get_current_os, OperatingSystem
 from src.utils.node_finder.mac import NodeFinderMac, NodeNotFoundError
 from src.installers.cursor.mac.installer import CursorMacInstaller
@@ -106,9 +105,13 @@ def uninstall_all(os_type):
         try:
             installer = os_map.get(os_key)
             if installer:
+                if not installer.is_client_installed():
+                    print(f"Mint Security Supervisor is not installed on {app.replace('-', ' ').title()}, skipping uninstallation")
+                    continue
                 print(f"Uninstalling {app.replace('-', ' ').title()}...")
                 if installer.run_uninstallation():
                     print(f"Successfully uninstalled {app.replace('-', ' ').title()}")
+                    print(f" >>> NOTE: In oreder for the uninstallation to take effect, please close {app.replace('-', ' ').title()} and restart it. <<<")
                 else:
                     print(f"Failed to uninstall {app.replace('-', ' ').title()}")
         except Exception as e:
@@ -138,9 +141,13 @@ def main():
                 try:
                     installer = os_map.get(os_key)
                     if installer:
+                        if installer.is_client_installed():
+                            print(f"Mint Security Supervisor is already installed on {app.replace('-', ' ').title()}, skipping installation")
+                            continue
                         print(f"Running installation for {app.replace('-', ' ').title()} on {os_type.name}")
                         installer.run_installation()
                         print(f"Installation for {app.replace('-', ' ').title()} on {os_type.name} completed")
+                        print(f" >>> NOTE: In oreder for the installation to take effect, please close {installer.APP_NAME} and restart it. <<<")
                 except Exception as e:
                     print(f"Error installing {app} on {os_type.name}: {e}")
         else:
@@ -148,9 +155,13 @@ def main():
                 app_key = selection.lower().replace(' ', '-')
                 installer = installer_objects.get(app_key, {}).get(os_key)
                 if installer:
+                    if installer.is_client_installed():
+                        print(f"Mint Security Supervisor is already installed on {selection}, skipping installation")
+                        return
                     print(f"Running installation for {selection} on {os_type.name}")
                     installer.run_installation()
                     print(f"Installation for {selection} on {os_type.name} completed")
+                    print(f" >>> NOTE: In oreder for the installation to take effect, please close {installer.APP_NAME} and restart it. <<<")
                 else:
                     print(f"No installer available for {selection} on {os_type.name}")
             except Exception as e:
