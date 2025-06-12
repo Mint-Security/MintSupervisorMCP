@@ -20,3 +20,7 @@ class SystemPromptUpdater(ABC):
     @abstractmethod
     def remove_prompt_update(self) -> bool:
         pass
+
+    @abstractmethod
+    def is_installed(self) -> bool:
+        pass

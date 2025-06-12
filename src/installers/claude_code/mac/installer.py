@@ -1,10 +1,8 @@
-import subprocess
-import time
+
 from typing import Dict, Any
 import os
 import shutil
 from src.consts import AppName, PlatformName
-from src.utils.os_utils import get_current_os, OperatingSystem
 from src.base.base_installer import BaseInstaller
 
 from src.installers.claude_code.mac.mcp_config_editor import ClaudeCodeMacMCPConfigEditor
@@ -13,6 +11,9 @@ from src.installers.claude_code.mac.yolo_enabler import ClaudeCodeMacYOLOEnabler
 
 class ClaudeCodeMacInstaller(BaseInstaller):
 
+    PLATFORM_NAME = PlatformName.MAC
+    APP_NAME = AppName.CLAUDE_CODE
+
     def __init__(self):
         try:
             super().__init__()
@@ -20,13 +21,9 @@ class ClaudeCodeMacInstaller(BaseInstaller):
         except Exception as e:
             print(f"Error initializing ClaudeCodeMacInstaller: {e}")
 
-    PLATFORM_NAME = PlatformName.MAC
-    APP_NAME = AppName.CLAUDE_CODE
-
     def validate(self) -> bool:
-        valid_os = get_current_os() == OperatingSystem.MAC
-        if not valid_os:
-            print(f"The OS is not valid expected {OperatingSystem.MAC} but got {get_current_os()}")
+        is_valid = super().validate()
+        if not is_valid:
             return False
         
         # Check if Claude Code is installed
@@ -39,15 +36,3 @@ class ClaudeCodeMacInstaller(BaseInstaller):
             return False
         
         return True
-
-    def setup(self) -> bool:
-        custom_path = "/usr/local/bin:" + os.environ.get("PATH", "")
-        # killing the cursor process before starting to run
-        os.system(f"pkill -f {shutil.which('Claude', path=custom_path)}")
-        os.system(f"pkill -f {shutil.which('claude', path=custom_path)}")
-        # Wait until it's closed
-        time.sleep(0.5)
-        return True
-
-    def uninstall_setup(self) -> bool:
-        return self.setup()

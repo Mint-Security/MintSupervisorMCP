@@ -16,3 +16,7 @@ class ClaudeDesktopMacSystemPromptUpdater(SystemPromptUpdater):
     def remove_prompt_update(self) -> bool:
         # TODO: Implement this
         return True
+    
+    def is_installed(self) -> bool:
+        # TODO: Implement this
+        return True

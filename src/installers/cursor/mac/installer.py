@@ -1,9 +1,5 @@
-import time
-from typing import Dict, Any
 import os
-import subprocess
 import shutil
-from src.utils.os_utils import get_current_os, OperatingSystem
 from src.base.base_installer import BaseInstaller
 
 from src.installers.cursor.mac.mcp_config_editor import CursorMacMCPConfigEditor
@@ -13,6 +9,10 @@ from src.consts import PlatformName, AppName
 
 class CursorMacInstaller(BaseInstaller):
 
+    PLATFORM_NAME = PlatformName.MAC
+    APP_NAME = AppName.CURSOR
+    CONFIG_FILE_PATH = "~/.cursor/mcp.json"
+
     def __init__(self):
         try:
             super().__init__()
@@ -20,13 +20,9 @@ class CursorMacInstaller(BaseInstaller):
         except Exception as e:
             print(f"Error initializing CursorMacInstaller: {e}")
 
-    PLATFORM_NAME = PlatformName.MAC
-    APP_NAME = AppName.CURSOR
-
     def validate(self) -> bool:
-        vlaid_os = get_current_os() == OperatingSystem.MAC
-        if not vlaid_os:
-            print(f"the os is not valid expected {OperatingSystem.MAC} but got {get_current_os()}")
+        is_valid = super().validate()
+        if not is_valid:
             return False
         
         custom_path = "/usr/local/bin:" + os.environ.get("PATH", "")
@@ -39,19 +35,3 @@ class CursorMacInstaller(BaseInstaller):
             return False
         
         return True
-
-    def uninstall_setup(self) -> bool:
-        os.system("osascript -e 'quit app \"Cursor\"'")
-        # Wait until it's closed
-        while subprocess.run(["pgrep", "-x", "Cursor"], stdout=subprocess.DEVNULL).returncode == 0:
-            time.sleep(1)
-        return True
-
-    def setup(self) -> bool:
-        # killing the cursor process before starting to run
-        os.system("osascript -e 'quit app \"Cursor\"'")
-        # Wait until it's closed
-        while subprocess.run(["pgrep", "-x", "Cursor"], stdout=subprocess.DEVNULL).returncode == 0:
-            time.sleep(1)
-        return True
-       

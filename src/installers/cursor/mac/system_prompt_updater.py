@@ -91,3 +91,28 @@ IMPORTANT:
         conn.commit()
         conn.close()
         return True
+    
+    def is_installed(self) -> bool:
+        # check if the state.vscdb file exists and contains our system prompt
+        if not os.path.exists(self.DATABASE_FILE_PATH):
+            return False
+        
+        try:
+            conn = sqlite3.connect(self.DATABASE_FILE_PATH)
+            cursor = conn.cursor()
+            
+            # Get the current value from the database
+            cursor.execute("SELECT value FROM ItemTable WHERE key = ?", ("aicontext.personalContext",))
+            row = cursor.fetchone()
+            
+            conn.close()
+            
+            if not row:
+                return False
+            
+            # Check if our system prompt is in the content
+            content = row[0]
+            return MINT_SECTION_START in content and MINT_SECTION_END in content
+            
+        except (sqlite3.Error, Exception) as e:
+            return False

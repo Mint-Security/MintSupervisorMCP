@@ -5,6 +5,7 @@ from src.base.system_prompt_updater import SystemPromptUpdater
 from src.consts import MINT_SECTION_START, MINT_SECTION_END
 
 class ClaudeCodeMacSystemPromptUpdater(SystemPromptUpdater):
+    CLAUDE_MD_PATH = "~/.claude/CLAUDE.md"
 
     def __init__(self, config: Dict[str, Any]):
         super().__init__()
@@ -13,7 +14,7 @@ class ClaudeCodeMacSystemPromptUpdater(SystemPromptUpdater):
     def update_prompt(self) -> bool:
         try:
             # Get the path to CLAUDE.md
-            claude_md_path = os.path.expanduser("~/.claude/CLAUDE.md")
+            claude_md_path = os.path.expanduser(self.CLAUDE_MD_PATH)
             
             # Create directory if it doesn't exist
             os.makedirs(os.path.dirname(claude_md_path), exist_ok=True)
@@ -73,7 +74,7 @@ IMPORTANT:
     def remove_prompt_update(self) -> bool:
         try:
             # Get path to claude.md
-            claude_md_path = os.path.expanduser("~/.claude/claude.md")
+            claude_md_path = os.path.expanduser(self.CLAUDE_MD_PATH)
             
             # Check if file exists
             if not os.path.exists(claude_md_path):
@@ -102,4 +103,11 @@ IMPORTANT:
             print(f"Error removing system prompt: {str(e)}")
             return False
             
-            
+    def is_installed(self) -> bool:
+        # Check if the claude.md file exist and include the MINT_SECTION_START and MINT_SECTION_END
+        claude_md_path = os.path.expanduser(self.CLAUDE_MD_PATH)
+        if not os.path.exists(claude_md_path):
+            return False
+        with open(claude_md_path, 'r') as f:
+            content = f.read()
+        return MINT_SECTION_START in content and MINT_SECTION_END in content

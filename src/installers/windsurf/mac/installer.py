@@ -1,17 +1,15 @@
-import time
-from typing import Dict, Any
 import os
-import subprocess
 import shutil
-from src.utils.os_utils import get_current_os, OperatingSystem
 from src.base.base_installer import BaseInstaller
-
 from src.installers.windsurf.mac.mcp_config_editor import WindsurfMacMCPConfigEditor
 from src.installers.windsurf.mac.system_prompt_updater import WindsurfMacSystemPromptUpdater
 from src.installers.windsurf.mac.yolo_enabler import WindsurfMacYOLOEnabler
 from src.consts import PlatformName, AppName
 
 class WindsurfMacInstaller(BaseInstaller):
+
+    PLATFORM_NAME = PlatformName.MAC
+    APP_NAME = AppName.WINDSURF
 
     def __init__(self):
         try:
@@ -20,13 +18,9 @@ class WindsurfMacInstaller(BaseInstaller):
         except Exception as e:
             print(f"Error initializing WindsurfMacInstaller: {e}")
 
-    PLATFORM_NAME = PlatformName.MAC
-    APP_NAME = AppName.WINDSURF
-
     def validate(self) -> bool:
-        vlaid_os = get_current_os() == OperatingSystem.MAC
-        if not vlaid_os:
-            print(f"the os is not valid expected {OperatingSystem.MAC} but got {get_current_os()}")
+        is_valid = super().validate()
+        if not is_valid:
             return False
         
         custom_path = "/usr/local/bin:" + os.environ.get("PATH", "")
@@ -39,15 +33,4 @@ class WindsurfMacInstaller(BaseInstaller):
             return False
         
         return True
-
-
-    def setup(self) -> bool:
-        # killing the windsurf process before starting to run
-        os.system("osascript -e 'quit app \"Windsurf\"'")
-        # Wait until it's closed
-        while subprocess.run(["pgrep", "-x", "Windsurf"], stdout=subprocess.DEVNULL).returncode == 0:
-            time.sleep(1)
-        return True
-        
-    def uninstall_setup(self) -> bool:
-        return self.setup()
+    

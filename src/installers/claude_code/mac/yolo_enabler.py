@@ -91,3 +91,12 @@ class ClaudeCodeMacYOLOEnabler(AutoRunEnabler):
         except Exception as e:
             print(f"Error disabling YOLO mode: {str(e)}")
             return False
+        
+    def is_installed(self) -> bool:
+        # Check if the settings.json file exist and include the required permissions
+        settings_path = os.path.expanduser("~/.claude/settings.json")
+        if not os.path.exists(settings_path):
+            return False
+        with open(settings_path, 'r') as f:
+            settings = json.load(f)
+        return all(perm in settings["permissions"]["allow"] for perm in self.REQUIRED_PERMISSIONS)
