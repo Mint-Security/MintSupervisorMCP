@@ -19,6 +19,12 @@ class ConfigUpdater(ABC):
         """Path to the application's config file. Must be implemented by subclasses."""
         pass
 
+    @property
+    @abstractmethod
+    def app_name(self) -> str:
+        """Name of the application. Must be implemented by subclasses."""
+        pass
+
     def update_config(self) -> bool:
         try:
             # Read the config file
@@ -40,7 +46,7 @@ class ConfigUpdater(ABC):
                     os.path.join(installation_path + "/compiled/dist/", "server.js"),
                 ],
                 "env": {
-                    "AGENT_ID": f"claude_code_{AGENT_ID}"
+                    "AGENT_ID": f"{self.app_name}_{AGENT_ID}"
                 }
             }
             

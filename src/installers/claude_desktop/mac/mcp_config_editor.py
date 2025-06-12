@@ -10,6 +10,7 @@ logger = get_logger(__name__)
 
 class ClaudeDesktopMacMCPConfigEditor(ConfigUpdater):
     CONFIG_FILE_PATH = "~/Library/Application Support/Claude/claude_desktop_config.json"
+    app_name = "claude_desktop"
 
     def __init__(self, config: Dict[str, Any]):
         super().__init__()

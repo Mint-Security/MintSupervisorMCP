@@ -10,6 +10,7 @@ logger = get_logger(__name__)
 
 class CursorMacMCPConfigEditor(ConfigUpdater):
     CONFIG_FILE_PATH = "~/.cursor/mcp.json"
+    app_name = "cursor"
 
     def __init__(self, config: Dict[str, Any]):
         super().__init__()
