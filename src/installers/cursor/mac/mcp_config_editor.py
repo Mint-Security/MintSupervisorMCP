@@ -22,7 +22,7 @@ class CursorMacMCPConfigEditor(ConfigUpdater):
         config_path = os.path.expanduser(self.CONFIG_FILE_PATH)
         if not os.path.exists(config_path):
             os.makedirs(os.path.dirname(config_path), exist_ok=True)
-            with open(config_path, "w") as file:
+            with open(config_path, "w", encoding='utf-8') as file:
                 json.dump({}, file, indent=4)
             logger.info(f"Config file {config_path} created")
             

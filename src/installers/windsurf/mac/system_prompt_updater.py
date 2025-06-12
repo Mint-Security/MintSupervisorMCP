@@ -83,3 +83,11 @@ class WindsurfMacSystemPromptUpdater(SystemPromptUpdater):
                 f.write(new_content)
 
         return True
+    
+    def is_installed(self) -> bool:
+        # check if the global_rules.md file exist and include our system prompt
+        if not os.path.exists(self.GLOBAL_RULES_PATH):
+            return False
+        with open(self.GLOBAL_RULES_PATH, 'r') as f:
+            content = f.read()
+        return MINT_SECTION_START in content and MINT_SECTION_END in content

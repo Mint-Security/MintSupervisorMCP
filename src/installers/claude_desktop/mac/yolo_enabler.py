@@ -15,3 +15,7 @@ class ClaudeDesktopMacYOLOEnabler(AutoRunEnabler):
     def disable_auto_run(self) -> bool:
         # TODO: Implement this
         return True
+    
+    def is_installed(self) -> bool:
+        # TODO: Implement this
+        return True

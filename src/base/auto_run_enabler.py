@@ -14,3 +14,7 @@ class AutoRunEnabler(ABC):
     @abstractmethod
     def disable_auto_run(self) -> bool:
         return True
+    
+    @abstractmethod
+    def is_installed(self) -> bool:
+        pass

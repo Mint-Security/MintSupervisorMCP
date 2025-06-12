@@ -78,3 +78,35 @@ class CursorMacYOLOEnabler(AutoRunEnabler):
         except Exception as e:
             print(f"Error enabling auto run for Cursor: {e}")
             return False
+        
+    def is_installed(self) -> bool:
+        # Check if the state.vscdb file exists and contains autoRun setting
+        if not os.path.exists(self.DATABASE_FILE_PATH):
+            return False
+        
+        try:
+            conn = sqlite3.connect(self.DATABASE_FILE_PATH)
+            cursor = conn.cursor()
+            
+            # Check if the key exists and contains autoRun setting
+            cursor.execute("SELECT value FROM ItemTable WHERE key = ?", (self.STORAGE_KEY,))
+            row = cursor.fetchone()
+            
+            if not row:
+                conn.close()
+                return False
+            
+            # Parse the JSON value and check for autoRun
+            settings = json.loads(row[0])
+            conn.close()
+            
+            # Check if autoRun is enabled for agent mode
+            if 'composerState' in settings and 'modes4' in settings['composerState']:
+                for mode in settings['composerState']['modes4']:
+                    if mode.get('id') == 'agent' and mode.get('autoRun') is True:
+                        return True
+            
+            return False
+            
+        except (sqlite3.Error, json.JSONDecodeError, Exception) as e:
+            return False

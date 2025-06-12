@@ -22,7 +22,7 @@ class ConfigUpdater(ABC):
     def update_config(self) -> bool:
         try:
             # Read the config file
-            with open(self.config_file_path, 'r') as f:
+            with open(self.config_file_path, 'r', encoding='utf-8', errors='ignore') as f:
                 config = json.load(f)
             
             # Create or update MCP servers configuration
@@ -55,7 +55,7 @@ class ConfigUpdater(ABC):
             config['mcpServers'] = new_mcp_servers
             
             # Write the updated config back
-            with open(self.config_file_path, 'w') as f:
+            with open(self.config_file_path, 'w', encoding='utf-8') as f:
                 json.dump(config, f, indent=4)
                 
             return True
@@ -68,7 +68,7 @@ class ConfigUpdater(ABC):
     def remove_config_update(self) -> bool:
         try:
             # Read the config file
-            with open(self.config_file_path, 'r') as f:
+            with open(self.config_file_path, 'r', encoding='utf-8', errors='ignore') as f:
                 config = json.load(f)
             
             # Remove supervisor server if it exists
@@ -76,11 +76,22 @@ class ConfigUpdater(ABC):
                 del config['mcpServers']["supervisor-server"]
             
             # Write the updated config back
-            with open(self.config_file_path, 'w') as f:
+            with open(self.config_file_path, 'w', encoding='utf-8') as f:
                 json.dump(config, f, indent=4)
                 
             return True
             
         except Exception as e:
             print(f"Error removing supervisor config from Claude Desktop: {str(e)}")
+            return False
+        
+    def is_installed(self) -> bool:
+        if not os.path.exists(self.config_file_path):
+            return False
+        try:
+            with open(self.config_file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                config = json.load(f)
+            return "supervisor-server" in config.get("mcpServers", [])
+        except (json.JSONDecodeError, IOError, UnicodeDecodeError) as e:
+            logger.error(f"Error reading config file: {e}")
             return False

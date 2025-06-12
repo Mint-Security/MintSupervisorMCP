@@ -47,34 +47,17 @@ class BaseInstaller(ABC):
             return False
         return True
         
-    def is_client_installed(self) -> bool:
-        logger.debug(f"Checking if {self.APP_NAME} is installed")
-        
-        #Check is supervisor-server is installed in config file
-        if not os.path.exists(self.config_updater.config_file_path):
-            logger.debug(f"Config file not found: {self.config_updater.config_file_path}")
-            logger.info(f"{self.APP_NAME} is not installed")
-            return False
-        
-        logger.debug(f"Config file found: {self.config_updater.config_file_path}")
-        
-        try:
-            #Check if the config file is valid
-            with open(self.config_updater.config_file_path, "r") as f:
-                config = json.load(f)
-            
-            #if config include "supervisor-server" in the "clients" array
-            if "supervisor-server" in config.get("mcpServers", []):
-                logger.info(f"{self.APP_NAME} is installed")
-                return True
-            
-            logger.info(f"{self.APP_NAME} is not installed")
-            return False
-            
-        except (json.JSONDecodeError, IOError) as e:
-            logger.error(f"Error reading config file for {self.APP_NAME}: {e}")
-            return False
+    def is_app_installed(self) -> bool:
+        # If one of the objects is not installed, return False
+        if self.auto_run_enabler.is_installed() and self.config_updater.is_installed() and self.prompt_updater.is_installed():
+            return True
+        return False
 
+    def is_app_partially_installed(self) -> bool:
+        # If one of the objects is installed, return True
+        if self.auto_run_enabler.is_installed() or self.config_updater.is_installed() or self.prompt_updater.is_installed():
+            return True
+        return False
 
     def download_application(self) -> bool:
         try:
@@ -124,16 +107,31 @@ class BaseInstaller(ABC):
         
         logger.info("Download and validation completed successfully")
         
+        if self.prompt_updater.is_installed():
+            logger.info("Removing system prompt updates")
+            self.prompt_updater.remove_prompt_update()
+            time.sleep(0.5)
+       
         # update the system prompt of the target application
         logger.info("Updating system prompt")
         self.prompt_updater.update_prompt()
         time.sleep(0.5)
         
+        if self.config_updater.is_installed():
+            logger.info("Removing configuration updates")
+            self.config_updater.remove_config_update()
+            time.sleep(0.5)
+        
         # update the config json of the target application
         logger.info("Updating configuration")
         self.config_updater.update_config()
         time.sleep(0.5)
-        
+    
+        if self.auto_run_enabler.is_installed():
+            logger.info("Disabling auto-run")
+            self.auto_run_enabler.disable_auto_run()
+            time.sleep(0.5)
+
         # enable auto-run to make our mcp server autostart in the target application
         logger.info("Enabling auto-run")
         self.auto_run_enabler.enable_auto_run()
@@ -145,17 +143,20 @@ class BaseInstaller(ABC):
     def run_uninstallation(self) -> bool:
         logger.info(f"Starting uninstallation process for {self.APP_NAME}")
         
-        logger.info("Disabling auto-run")
-        self.auto_run_enabler.disable_auto_run()
-        time.sleep(0.5)
+        if self.auto_run_enabler.is_installed():
+            logger.info("Disabling auto-run")
+            self.auto_run_enabler.disable_auto_run()
+            time.sleep(0.5)
         
-        logger.info("Removing configuration updates")
-        self.config_updater.remove_config_update()
-        time.sleep(0.5)
+        if self.config_updater.is_installed():
+            logger.info("Removing configuration updates")
+            self.config_updater.remove_config_update()
+            time.sleep(0.5)
         
-        logger.info("Removing system prompt updates")
-        self.prompt_updater.remove_prompt_update()
-        time.sleep(0.5)
+        if self.prompt_updater.is_installed():
+            logger.info("Removing system prompt updates")
+            self.prompt_updater.remove_prompt_update()
+            time.sleep(0.5)
         
         logger.info(f"Uninstallation process completed successfully for {self.APP_NAME}")
         return True

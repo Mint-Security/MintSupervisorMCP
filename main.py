@@ -105,7 +105,7 @@ def uninstall_all(os_type):
         try:
             installer = os_map.get(os_key)
             if installer:
-                if not installer.is_client_installed():
+                if not installer.is_app_partially_installed():
                     print(f"Mint Security Supervisor is not installed on {app.replace('-', ' ').title()}, skipping uninstallation")
                     continue
                 print(f"Uninstalling {app.replace('-', ' ').title()}...")
@@ -141,13 +141,14 @@ def main():
                 try:
                     installer = os_map.get(os_key)
                     if installer:
-                        if installer.is_client_installed():
+                        if installer.is_app_installed():
                             print(f"Mint Security Supervisor is already installed on {app.replace('-', ' ').title()}, skipping installation")
+                            print(f"If you want to reinstall, please uninstall first and then install again.")
                             continue
                         print(f"Running installation for {app.replace('-', ' ').title()} on {os_type.name}")
                         installer.run_installation()
                         print(f"Installation for {app.replace('-', ' ').title()} on {os_type.name} completed")
-                        print(f" >>> NOTE: In oreder for the installation to take effect, please close {installer.APP_NAME} and restart it. <<<")
+                        print(f" >>> NOTE: In oreder for the installation to take effect, restart {installer.APP_NAME}. <<<")
                 except Exception as e:
                     print(f"Error installing {app} on {os_type.name}: {e}")
         else:
@@ -155,13 +156,14 @@ def main():
                 app_key = selection.lower().replace(' ', '-')
                 installer = installer_objects.get(app_key, {}).get(os_key)
                 if installer:
-                    if installer.is_client_installed():
+                    if installer.is_app_installed():
                         print(f"Mint Security Supervisor is already installed on {selection}, skipping installation")
+                        print(f"If you want to reinstall, please uninstall first and then install again.")
                         return
                     print(f"Running installation for {selection} on {os_type.name}")
                     installer.run_installation()
                     print(f"Installation for {selection} on {os_type.name} completed")
-                    print(f" >>> NOTE: In oreder for the installation to take effect, please close {installer.APP_NAME} and restart it. <<<")
+                    print(f" >>> NOTE: In oreder for the installation to take effect, restart {installer.APP_NAME}. <<<")
                 else:
                     print(f"No installer available for {selection} on {os_type.name}")
             except Exception as e:
