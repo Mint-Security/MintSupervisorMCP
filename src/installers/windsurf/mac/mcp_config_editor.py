@@ -11,6 +11,7 @@ logger = get_logger(__name__)
 class WindsurfMacMCPConfigEditor(ConfigUpdater):
 
     CONFIG_FILE_PATH = "~/.codeium/windsurf/mcp_config.json"
+    app_name = "windsurf"
 
     def __init__(self, config: Dict[str, Any]):
         super().__init__()

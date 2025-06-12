@@ -111,7 +111,7 @@ def uninstall_all(os_type):
                 print(f"Uninstalling {app.replace('-', ' ').title()}...")
                 if installer.run_uninstallation():
                     print(f"Successfully uninstalled {app.replace('-', ' ').title()}")
-                    print(f" >>> NOTE: In oreder for the uninstallation to take effect, please close {app.replace('-', ' ').title()} and restart it. <<<")
+                    print(f" >>> NOTE: In order for the uninstallation to take effect, please close {app.replace('-', ' ').title()} and restart it. <<<")
                 else:
                     print(f"Failed to uninstall {app.replace('-', ' ').title()}")
         except Exception as e:
@@ -148,7 +148,7 @@ def main():
                         print(f"Running installation for {app.replace('-', ' ').title()} on {os_type.name}")
                         installer.run_installation()
                         print(f"Installation for {app.replace('-', ' ').title()} on {os_type.name} completed")
-                        print(f" >>> NOTE: In oreder for the installation to take effect, restart {installer.APP_NAME}. <<<")
+                        print(f" >>> NOTE: In order for the installation to take effect, restart {installer.APP_NAME}. <<<")
                 except Exception as e:
                     print(f"Error installing {app} on {os_type.name}: {e}")
         else:
@@ -163,7 +163,7 @@ def main():
                     print(f"Running installation for {selection} on {os_type.name}")
                     installer.run_installation()
                     print(f"Installation for {selection} on {os_type.name} completed")
-                    print(f" >>> NOTE: In oreder for the installation to take effect, restart {installer.APP_NAME}. <<<")
+                    print(f" >>> NOTE: In order for the installation to take effect, restart {installer.APP_NAME}. <<<")
                 else:
                     print(f"No installer available for {selection} on {os_type.name}")
             except Exception as e:
